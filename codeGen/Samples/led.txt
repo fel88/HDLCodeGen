@@ -1,0 +1,11 @@
+﻿int j;
+int i;
+j=0;
+label0:
+i=250000;
+label1:
+i--;
+if(i!=0) goto label1;
+j++;
+out[0]=j;
+goto label0;

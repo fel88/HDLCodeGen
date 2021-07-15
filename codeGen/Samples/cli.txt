@@ -1,0 +1,130 @@
+﻿out[3]=1;
+
+int fbc;
+int inp;
+int symb;
+int crn;
+int ind;
+crn=1;
+symb=92;
+vram[0]=91;
+fbc=2;
+out[2]=fbc;
+vram[0]=91;
+fbc=0;
+out[2]=fbc;
+label0:
+inp=fifoRead
+inp=fifoRead
+inp=fifoRead
+symb=254;
+//a
+if(inp==28)  symb=65;
+//enter
+if(inp==90)  goto label1;
+if(inp==50)  symb=66;
+if(inp==43)  symb=70;
+if(inp==51)  symb=72;
+if(inp==52)  symb=71;
+if(inp==65)  symb=140;
+if(inp==27)  symb=83;
+//t
+if(inp==44)  symb=84;
+if(inp==33)  symb=67;
+if(inp==35)  symb=68;
+//r
+if(inp==45)  symb=82;
+if(inp==68)  symb=79;
+//w
+if(inp==29)  symb=87;
+//u
+if(inp==60)  symb=85;
+//n
+if(inp==49)  symb=78;
+//1
+if(inp==22)  symb=118;
+//2
+if(inp==30)  symb=119;
+//3
+if(inp==38)  symb=120;
+//4
+if(inp==37)  symb=121;
+//5
+if(inp==46)  symb=122;
+//6
+if(inp==54)  symb=123;
+//7
+if(inp==61)  symb=124;
+//8
+if(inp==62)  symb=125;
+//9
+if(inp==70)  symb=126;
+//0
+if(inp==69)  symb=117;
+//q
+if(inp==0x15)  symb=81;
+//p
+if(inp==0x4d)  symb=80;
+//y
+if(inp==0x35)  symb=89;
+//z
+if(inp==0x1a)  symb=90;
+//j
+if(inp==0x3b)  symb=74;
+//k
+if(inp==0x42)  symb=75;
+//x
+if(inp==0x22)  symb=88;
+//v
+if(inp==0x2a)  symb=86;
+//m
+if(inp==0x3a)  symb=77;
+
+if(inp==67)  symb=73;
+if(inp==73)  symb=139;
+if(inp==41)  symb=0;
+if(inp==36)  symb=69;
+if(inp==75)  symb=76;
+if(inp==102)  goto label9;
+if(symb==254)  goto label0;
+vram[crn]=symb;
+fbc+=2;
+if(fbc==4)fbc=0;
+out[2]=fbc;
+vram[crn]=symb;
+fbc+=2;
+if(fbc==4)fbc=0;
+out[2]=fbc;
+crn++;
+goto label0;
+label1:
+crn=0;
+ind=0;
+label2:
+vram[ind]=0;
+ind++;
+if(ind!=1900) goto label2;
+fbc+=2;
+if(fbc==4)fbc=0;
+out[2]=fbc;
+ind=0;
+label4:
+vram[ind]=0;
+ind++;
+if(ind!=1900) goto label4;
+fbc+=2;
+if(fbc==4)fbc=0;
+out[2]=fbc;
+goto label0;
+label9:
+if(crn==0)goto label0;
+crn--;
+vram[crn]=0;
+fbc+=2;
+if(fbc==4)fbc=0;
+out[2]=fbc;
+vram[crn]=0;
+fbc+=2;
+if(fbc==4)fbc=0;
+out[2]=fbc;
+goto label0;

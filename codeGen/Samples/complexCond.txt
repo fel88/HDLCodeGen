@@ -1,0 +1,9 @@
+﻿int h;
+h=0x20;
+if(h!=0x20 && h!=0x10) goto label0;
+out[0]=1;
+goto label1;
+label0:
+out[0]=2;
+label1:
+goto label1;

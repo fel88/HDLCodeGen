@@ -1,0 +1,323 @@
+﻿// ----------
+// check file menu +
+// read whole file and calc checksum
+//
+// ---------
+start:
+int i;
+int fcs[10];
+int flen[10];
+int rootEntries;
+out[0]=1;
+readSd(0x0)
+
+int reserved;
+reserved=ram[0xe];
+int fatOffset;
+fatOffset=reserved;
+fatOffset*=512;
+int numOfFats;
+numOfFats=ram[0x10];
+rootEntries=ram[0x11]
+int temp2;
+temp2=ram[0x12];
+temp2<<8;
+rootEntries|=temp2;
+int fatsSectors;
+fatsSectors=ram[0x16];
+int sectorsPerCluster;
+sectorsPerCluster=ram[0xD];
+int rootDirOffset;
+rootDirOffset=numOfFats;
+rootDirOffset*=fatsSectors;
+rootDirOffset*=512;
+rootDirOffset+=fatOffset;
+int swap;
+showFileList:
+//clear old here
+clear0:
+int jj;
+vram[jj]=0;
+jj++;
+if(jj!=1900) goto clear0;
+jj=0;
+
+swap+=2;
+if(swap==4) swap=0;
+out[2]=swap;
+
+clear1:
+vram[jj]=0;
+jj++;
+if(jj!=1900) goto clear1;
+jj=0;
+
+int offset1;
+offset1=rootDirOffset;
+readSd(rootDirOffset)
+
+int attrib;
+int pos;
+pos=0;
+
+int fb;
+int temp1;
+
+int px;
+int py;
+py=0;
+px=10;
+
+int ttt;
+int orig;
+int fileCnt;
+fileCnt=0;
+m0:
+
+
+
+	temp1=ram[pos];
+	if(temp1==0) goto m1;
+	if(temp1==0xe5) goto m2;
+	int var1;
+	var1=pos;
+	var1+=0xb;
+	attrib=ram[var1];	
+	if(attrib!=0x20) goto m2;
+	
+	int fcOffset;
+	fcOffset=pos;
+	fcOffset+=0x1a;
+	int fc;
+	fc=ram[fcOffset];
+	//fc-=2;
+	
+	fcs[fileCnt]=fc;
+	
+	fcOffset=pos;
+	fcOffset+=0x1c;
+	fc=ram[fcOffset];
+	fcOffset++;
+	temp2=ram[fcOffset];
+	temp2<<8;
+	fc|=temp2;
+	fcOffset++;
+	temp2=ram[fcOffset];
+	temp2<<16;
+	fc|=temp2;
+	
+	flen[fileCnt]=fc;
+	
+	fileCnt++;
+	
+	r1:
+		int poss;
+		poss=py;
+		poss*=50;
+		poss+=px;
+		
+		var1=pos;
+		var1+=jj;
+		orig=ram[var1];
+		ttt=orig;
+		
+
+		if(ttt>=0x30 && ttt<=0x39){ttt+=0x45;}
+		//else{ttt-=0xDF;}
+		if(orig>=0x80 && ttt<=0x9f){ttt=orig; ttt-=0x5f;}
+		if(orig>=0x41 && orig<=0x5a){ttt=orig;ttt+=0x1a;}
+		//if(orig>=0x30 && orig<=0x39){ttt=orig;ttt+=0x1a;}
+		
+		if(orig==0x20) {ttt=0;}
+		if(orig>=0xC0 && orig<=0xDF) {ttt=orig;ttt-=0x9f;}
+		//if(orig==0x85) {ttt=0xAf;}
+		if(orig==0xB0) {ttt=0xB0;}
+
+
+		//if(orig==0xA) goto skip1;
+	//	if(orig==0xD) goto skip1;
+		if(orig==0x2e) ttt=0x8b;
+		if(orig==0x2c) ttt=0x8c;
+		if(orig==0x3a) ttt=0x98;
+		if(orig==0x96) ttt=0x89;
+		if(orig==0x2d) ttt=0x89;
+		if(orig==0x3f) ttt=0x99;
+		if(orig==0x21) ttt=0x7f;
+		if(orig==0x7e) ttt=0xa0;
+
+		vram[poss]=ttt;
+		swap+=2;
+		if(swap==4) swap=0;
+		out[2]=swap;
+		vram[poss]=ttt;
+		swap+=2;
+		if(swap==4) swap=0;
+		out[2]=swap;
+		
+		px++;
+		jj++;
+		if(jj==12)goto r2;
+		goto r1;
+	r2:
+	jj=0;
+	px=10;
+	py++;	
+	//i=fifoRead
+	//i=fifoRead
+	//i=fifoRead	
+	m2:
+	pos+=32;
+	//next page
+	if(pos==0x200) {offset1+=0x200; pos=0; readSd(offset1);}
+	//if(pos==0x200) goto m1;
+	goto m0;
+	
+
+m1:
+px=6;
+py=0;
+m33:
+int pyy;
+pyy=0;
+int jjj;
+jjj=0;
+m44:
+poss=pyy;
+poss*=50;
+poss+=px;
+vram[poss]=0x0;
+poss++;
+vram[poss]=0x0;
+jjj++;
+pyy++;
+if(jjj!=30) goto m44;
+poss=py;
+poss*=50;
+poss+=px;
+vram[poss]=0x91;
+poss++;
+vram[poss]=0x91;
+
+swap+=2;
+if(swap==4) swap=0;
+out[2]=swap;
+out[0]=3;
+
+int j;
+int k;
+klabel1:
+j=fifoRead
+if(j!=0xf0) goto klabel1;
+klabel2:
+k=fifoRead
+//if(k!=0x5a) goto klabel2;
+
+if(k==0x5a) {goto startReadFile;}
+if(k==0x72) {py++;}
+if(k==0x75) {goto dec0;}
+if(py==fileCnt) {py=0;}
+goto m33;
+dec0:
+if(py==0) {py=fileCnt;py--;}else{py--;}
+goto m33;
+
+
+int fileLen;
+int checksum;
+int bytesReaded;
+
+startReadFile:
+
+fc=fcs[py];
+checksum=0;
+fileLen=flen[py];
+//fileLen=0x50000;
+nextCluster:
+int fileDataOffset;
+fileDataOffset=rootEntries;
+fileDataOffset*=32;
+fileDataOffset+=rootDirOffset;
+int clusterSize;
+clusterSize=sectorsPerCluster;
+clusterSize*=512;
+int clusterOffset;
+
+
+
+clusterOffset=fc;
+clusterOffset-=2;
+clusterOffset*=clusterSize;
+fileDataOffset+=clusterOffset;
+readSd(fileDataOffset);
+int origFileDataOffset;
+origFileDataOffset=fileDataOffset;
+//0x76 ESC
+
+
+int cnt;
+int pageCnt;
+label88:
+cnt=0;
+
+pageCnt=0;
+
+label77:
+
+
+
+ttt=ram[cnt];
+checksum+=ttt;
+
+
+cnt++;
+bytesReaded++;
+if(bytesReaded==fileLen) goto out1;
+if(cnt!=512) goto label77;
+
+//checksum&=0xffff;
+//out[1]=checksum;
+
+
+
+pageCnt++;
+cnt=0;
+fileDataOffset+=512;
+readSd(fileDataOffset);
+if(pageCnt!=64) goto label77;
+
+//read next cluster
+//checksum&=0xffff;
+//out[1]=checksum;
+//out[0]=5;
+//readSd(fatOffset);
+
+
+readSd(fatOffset);
+
+//out[1]=fatOffset;
+
+
+
+int shift;
+shift=fc;
+shift*=2;
+fc=ram[shift];
+shift++;
+temp2=ram[shift];
+temp2<<8;
+fc|=temp2;
+
+
+
+
+if(fc!=0xffff) goto nextCluster;
+
+
+out1:
+out[0]=4;
+checksum&=0xffff;
+out[1]=checksum;
+
+
+label0:
+goto label0;

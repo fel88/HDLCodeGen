@@ -1,0 +1,30 @@
+﻿//
+// convert int8 image to fp16
+// originaly image should be stored into 0x0 sdram NHWC int16 (each channel int8 in separate int16 address)
+int size;
+int w;
+w=800;
+int h;
+h=600;
+size=w;
+size*=h;
+size*=3;
+int cntr;
+cnr=0;
+u0:
+int j;
+j=0;
+u1:
+int temp;
+temp=sdram[cntr];
+float t1;
+t1=temp;
+t1>>16;
+sdram[cntr]=t1;
+cntr++;
+j++;
+if(j!=3) goto u1;
+
+
+
+if(cntr!=size)goto u0;

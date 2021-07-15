@@ -1,0 +1,19 @@
+﻿//
+// Sdram red gradient sample
+//
+int jj;
+
+int x;
+label0:
+int red;
+red=x;
+red/=16;
+sdram[jj]=red;
+jj++;
+x++;
+if(x==800)x=0;
+if(jj!=480000) goto label0;
+out[2]=8;
+out[3]=2;
+label2:
+goto label2;

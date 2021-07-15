@@ -1,0 +1,5 @@
+﻿int e;
+e=35;
+div0:
+if(e>16){e-=16;goto div0;}
+out[1]=e;

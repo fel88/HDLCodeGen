@@ -1,0 +1,9 @@
+﻿int jj;
+label0:
+sdram[jj]=15;
+jj++;
+if(jj!=480000) goto label0;
+out[2]=8;
+out[3]=2;
+label2:
+goto label2;

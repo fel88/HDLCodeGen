@@ -1,0 +1,25 @@
+﻿float t;
+t=0.009356076829135418f;
+int jj;
+int temp;
+jj=0;
+int pos;
+pos=0x1000;
+label0:
+int cc;
+cc=jj;
+cc*=2;
+sdram[jj]=cc;
+temp=sdram[jj];
+
+float v;
+v=temp;
+v*=t;
+
+jj++;
+sdram[pos]=v;
+pos++;
+v>>16;
+sdram[pos]=v;
+pos++;
+if(jj!=100)goto label0;

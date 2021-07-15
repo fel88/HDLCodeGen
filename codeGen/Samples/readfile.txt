@@ -1,0 +1,65 @@
+﻿int a[10];
+int rootEntries;
+out[0]=1;
+readSd(0x0)
+int reserved;
+reserved=ram[0xe];
+int fatOffset;
+fatOffset=reserved;
+fatOffset*=512;
+int numOfFats;
+numOfFats=ram[0x10];
+rootEntries=ram[0x11]
+int temp2;
+temp2=ram[0x12];
+temp2<<8;
+int i;
+rootEntries|=temp2;
+int fatsSectors;
+fatsSectors=ram[0x16];
+int sectorsPerCluster;
+sectorsPerCluster=ram[0xD];
+int rootDirOffset;
+rootDirOffset=numOfFats;
+rootDirOffset*=fatsSectors;
+rootDirOffset*=512;
+rootDirOffset+=fatOffset;
+readSd(rootDirOffset)
+int attrib;
+int pos;
+int pos2;
+pos=11;
+int fb;
+int temp1;
+int index;
+label1:
+temp1=ram[pos2];
+if(temp1==0) goto label0;
+attrib=ram[pos];
+if(attrib==0x20) goto label2;
+a[index]=attrib;
+pos+=32;
+pos2+=32;
+index++;
+goto label1;
+label2:
+int fcOffset;
+fcOffset=pos2;
+fcOffset+=0x1a;
+int fc;
+fc=ram[fcOffset];
+fc-=2;
+int fileDataOffset;
+fileDataOffset=rootEntries;
+fileDataOffset*=32;
+fileDataOffset+=rootDirOffset;
+int clusterSize;
+clusterSize=sectorsPerCluster;
+clusterSize*=512;
+int clusterOffset;
+clusterOffset=fc;
+clusterOffset*=clusterSize;
+fileDataOffset+=clusterOffset;
+readSd(fileDataOffset);
+label0:
+goto label0;

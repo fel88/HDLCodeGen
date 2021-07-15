@@ -1,0 +1,11 @@
+﻿int i;
+int j;
+int p;
+j=0;
+label0:
+i=fifoRead
+if(i!=90) goto label0;
+j++;
+out[0]=j;
+out[1]=i;
+goto label0;
